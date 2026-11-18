@@ -1,0 +1,7 @@
+document.addEventListener('DOMContentLoaded', () => {
+  const table=document.getElementById('projectTable'); if(!table)return;
+  async function load(){const data=await api(window.LEXISCAN_BASE+'/api/projects/list.php'); if(!data.success)return; table.innerHTML=data.items.map(p=>`<tr><td><strong>${escapeHtml(p.project_name)}</strong></td><td>${escapeHtml(p.description||'No description')}</td><td>${p.analysis_count}</td><td><button class="button ghost small" data-delete="${p.id}" type="button">Delete</button></td></tr>`).join('')||'<tr><td colspan="4" class="empty-cell">No projects yet</td></tr>';} load();
+  const dialog=document.getElementById('projectDialog');document.getElementById('newProject')?.addEventListener('click',()=>dialog.showModal());document.getElementById('cancelProject')?.addEventListener('click',()=>dialog.close());
+  document.getElementById('projectForm')?.addEventListener('submit',async e=>{e.preventDefault();const data=await api(window.LEXISCAN_BASE+'/api/projects/create.php',{method:'POST',body:new FormData(e.target)});if(!data.success)return toast(data.message,'error');dialog.close();e.target.reset();toast(data.message);load();});
+  table.addEventListener('click',async e=>{const b=e.target.closest('[data-delete]');if(!b||!confirm('Delete this project?'))return;const f=new FormData();f.append('id',b.dataset.delete);f.append('csrf_token',window.LEXISCAN_CSRF);const d=await api(window.LEXISCAN_BASE+'/api/projects/delete.php',{method:'POST',body:f});if(!d.success)return toast(d.message,'error');toast(d.message);load();});
+});
