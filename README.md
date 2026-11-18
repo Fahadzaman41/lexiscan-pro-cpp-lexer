@@ -1,4 +1,4 @@
-# LexiScan Pro
+# LexiScan Pro (lexiscan-pro-cpp-lexer)
 
 LexiScan Pro is a full-stack PHP/MySQL C++ lexical-analysis and token-management application for local XAMPP use.
 
